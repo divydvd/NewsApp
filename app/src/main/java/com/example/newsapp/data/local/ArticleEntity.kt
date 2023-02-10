@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Article(
+    val author: String,
     val title: String,
     val sourceName: String,
     val publishedAt: String,

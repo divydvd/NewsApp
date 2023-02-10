@@ -2,17 +2,18 @@ package com.example.newsapp.data.remote
 
 import com.example.newsapp.data.remote.dto.NewsResponseDto
 import com.example.newsapp.util.Resource
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NewsApi {
 
-    @GET
+    @GET("/v2/top-headlines")
     suspend fun fetchTopHeadlines(
         @Query("country") country: String = "in",
-        @Query("pageSize") pageSize: Int = 10,
+        @Query("pageSize") pageSize: Int = 30,
         @Query("apiKey") apiKey: String = API_KEY
-    ): Resource<NewsResponseDto>
+    ): Response<NewsResponseDto>
 
 
     companion object {

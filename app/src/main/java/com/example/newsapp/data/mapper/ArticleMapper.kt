@@ -11,16 +11,18 @@ fun Article.toDomainArticle() : com.example.newsapp.domain.model.Article {
         ),
         publishedAt = publishedAt,
         urlToImage = urlToImage,
-        url = url ?: ""
+        url = url,
+        author = author
     )
 }
 
 fun com.example.newsapp.domain.model.Article.toDataArticle() : Article {
     return Article(
+        author = author,
         title = title,
         sourceName = source.name,
         publishedAt = publishedAt,
         urlToImage = urlToImage,
-        url = url ?: ""
+        url = url
     )
 }

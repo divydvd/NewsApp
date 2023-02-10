@@ -1,48 +1,50 @@
 package com.example.newsapp.data.remote.dto
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
+//@JsonClass(generateAdapter = true)
 data class NewsResponseDto(
-    @field:Json(name = "articles")
+    @SerializedName("articles")
     val articles: List<Article>?,
-
-    @field:Json(name = "status")
-    val status: String?,
-
-    @field:Json(name = "totalResults")
-    val totalResults: Int?
+//
+//    @SerializedName("status")
+//    val status: String?,
+//
+//    @SerializedName("totalResults")
+//    val totalResults: Int?
 )
 
+//@JsonClass(generateAdapter = true)
 data class Article(
-    @field:Json(name = "author")
+    @SerializedName("author")
     val author: String?,
-
-    @field:Json(name = "content")
+//
+    @SerializedName("content")
     val content: String?,
-
-    @field:Json(name = "description")
+//
+    @SerializedName("description")
     val description: String?,
-
-    @field:Json(name = "publishedAt")
+//
+    @SerializedName("publishedAt")
     val publishedAt: String?,
 
-    @field:Json(name = "source")
+    @SerializedName("source")
     val source: Source?,
 
-    @field:Json(name = "title")
+    @SerializedName("title")
     val title: String?,
-
-    @field:Json(name = "url")
+//
+    @SerializedName("url")
     val url: String?,
 
-    @field:Json(name = "urlToImage")
+    @SerializedName("urlToImage")
     val urlToImage: String?
 )
 
 data class Source(
-    @field:Json(name = "id")
+    @SerializedName("id")
     val id: String?,
 
-    @field:Json(name = "name")
+    @SerializedName("name")
     val name: String?
 )

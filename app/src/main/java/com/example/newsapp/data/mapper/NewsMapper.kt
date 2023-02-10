@@ -13,7 +13,8 @@ fun NewsResponseDto.toNewsInfo(): NewsInfo {
                 source = Source(it.source?.name ?: ""),
                 publishedAt = it.publishedAt ?: "",
                 urlToImage = it.urlToImage ?: "",
-                url = it.url ?: ""
+                url = it.url ?: "",
+                author = it.author ?: "",
             )
         } ?: emptyList(),
         isSaved = false

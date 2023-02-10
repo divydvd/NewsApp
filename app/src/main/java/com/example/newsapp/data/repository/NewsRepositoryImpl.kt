@@ -41,16 +41,27 @@ class NewsRepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Loading(true))
             val response = api.fetchTopHeadlines()
-            response.data?.let { data ->
+            if(response.isSuccessful) {
                 emit(Resource.Success(
-                    data = data.toNewsInfo()
+                    data = response.body()?.toNewsInfo()
                 ))
             }
-                ?: run {
-                    emit(Resource.Error(
-                        message = "fat gyi"
-                    ))
-                }
+            else {
+                emit(Resource.Error(
+                    message = "f"
+                ))
+            }
+//            response.body()
+//            response.data?.let { data ->
+//                emit(Resource.Success(
+//                    data = data.toNewsInfo()
+//                ))
+//            }
+//                ?: run {
+//                    emit(Resource.Error(
+//                        message = "fat gyi"
+//                    ))
+//                }
         }
     }
 }
