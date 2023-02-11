@@ -6,5 +6,6 @@ data class NewsListingState(
     val newsList: List<Article> = emptyList(),
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    val savedArticles: List<Article> = emptyList()
 )

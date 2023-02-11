@@ -23,7 +23,7 @@ class NewsRepositoryImpl @Inject constructor(
 
 ): NewsRepository {
     val dao = db.dao
-    override suspend fun fetchSavedArticles(): Flow<List<Article>> {
+    override fun fetchSavedArticles(): Flow<List<Article>> {
         return dao.getSavedArticles().map {
             it.map { article ->
                 article.toDomainArticle()

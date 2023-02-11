@@ -42,16 +42,17 @@ fun NewsScreen(
     newsViewModel: NewsViewModel = hiltViewModel(),
 ) {
     val state by newsViewModel.getState.collectAsState()
-    val savedArticles by newsViewModel.getSavedArticles.observeAsState(initial = emptyList())
+    val savedArticles by newsViewModel.savedArticles.observeAsState(initial = emptyList())
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing)
+
+    Log.d("helooo", state.savedArticles.toString())
 
     Box(modifier = Modifier) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
 
-        Log.d("hellooo", savedArticles.size.toString())
         SwipeRefresh(
             modifier = Modifier.fillMaxSize(),
             state = swipeRefreshState,
@@ -60,27 +61,52 @@ fun NewsScreen(
             }
         ) {
             LazyColumn() {
-                items(state.newsList) { article ->
-                    val saved = savedArticles.contains(article)
-                    NewsItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        article = article,
-                        saved = saved,
-                        navigateToArticle = {
-                            navigator.navigate(
-                                ArticleScreenDestination(
-                                    article
+                if(state.newsList.isEmpty()) {
+                    items(savedArticles) { article ->
+                        val saved = savedArticles.contains(article)
+                        NewsItem(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            article = article,
+                            saved = saved,
+                            navigateToArticle = {
+                                navigator.navigate(
+                                    ArticleScreenDestination(
+                                        article
+                                    )
                                 )
-                            )
-                        },
-                        onSaveIconClicked = { article ->
-                            newsViewModel.saveArticleClicked(article)
-                        }
-                    )
-                    Divider(color = colorResource(R.color.black))
+                            },
+                            onSaveIconClicked = { article ->
+                                newsViewModel.saveArticleClicked(article)
+                            }
+                        )
+                        Divider(color = colorResource(R.color.black))
+                    }
+                }
+                else {
+                    items(state.newsList) { article ->
+                        val saved = savedArticles.contains(article)
+                        NewsItem(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            article = article,
+                            saved = saved,
+                            navigateToArticle = {
+                                navigator.navigate(
+                                    ArticleScreenDestination(
+                                        article
+                                    )
+                                )
+                            },
+                            onSaveIconClicked = { article ->
+                                newsViewModel.saveArticleClicked(article)
+                            }
+                        )
+                        Divider(color = colorResource(R.color.black))
 
+                    }
                 }
             }
         }

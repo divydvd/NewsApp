@@ -1,10 +1,7 @@
 package com.example.newsapp.ui.presentation.screen.topnews
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.newsapp.domain.model.Article
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.util.Resource
@@ -25,12 +22,11 @@ class NewsViewModel @Inject constructor(
     private val _state = MutableStateFlow(NewsListingState())
     val getState = _state.asStateFlow()
 
-    private val _savedArticles = MutableLiveData<List<Article>>()
-    val getSavedArticles: LiveData<List<Article>>
+    private val _savedArticles = repository.fetchSavedArticles().asLiveData()
+    val savedArticles: LiveData<List<Article>>
         get() = _savedArticles
 
     init {
-        fetchSavedArticles()
         fetchLatestNews()
     }
 
@@ -45,24 +41,11 @@ class NewsViewModel @Inject constructor(
 
     fun saveArticleClicked(article: Article) {
         viewModelScope.launch(Dispatchers.IO) {
-            if(_savedArticles.value?.contains(article) == true) {
-                _savedArticles.postValue(_savedArticles.value?.minus(article))
+            if (_savedArticles.value?.contains(article) == true) {
                 repository.deleteSavedArticle(article = article)
-            }
-            else {
-                _savedArticles.postValue(_savedArticles.value?.plus(article) ?: listOf(article))
+            } else {
                 repository.insertSavedArticles(article = article)
             }
-        }
-    }
-
-    private fun fetchSavedArticles() {
-        viewModelScope.launch {
-            repository
-                .fetchSavedArticles()
-                .collect { savedArticles ->
-                    _savedArticles.postValue(savedArticles)
-                }
         }
     }
 
@@ -91,24 +74,15 @@ class NewsViewModel @Inject constructor(
                             }
                             is Resource.Error -> {
                                 _state.value = NewsListingState(
-                                    newsList = _savedArticles.value ?: emptyList(),
+                                    newsList = emptyList(),
                                     isLoading = false,
                                     isSaved = false
                                 )
                             }
-//                        is Resource.Loading -> {
-//                            _state.value.copy(
-//                                isLoading = result.isLoading
-//                            )
-//                        }
-                            else -> {
-
-                            }
                         }
                     }
             }
-        }
-        catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

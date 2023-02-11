@@ -9,7 +9,7 @@ import retrofit2.Response
 
 interface NewsRepository {
 
-    suspend fun fetchSavedArticles(): Flow<List<Article>>
+    fun fetchSavedArticles(): Flow<List<Article>>
 
     suspend fun insertSavedArticles(article: Article)
 
