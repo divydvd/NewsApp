@@ -58,21 +58,26 @@ fun ArticleScreen(
                             .fillMaxWidth(),
                         text = article.title,
                         fontSize = 20.sp,
+                        fontWeight = FontWeight.Black
                     )
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .wrapContentHeight(), //${if(article.publishedAt.isNotEmpty()) timeFormatter(article.publishedAt) else ""}
-                        text = "${article.author}",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if(article.author.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .wrapContentHeight(), //${if(article.publishedAt.isNotEmpty()) timeFormatter(article.publishedAt) else ""}
+                            text = "Reported by: ${article.author}",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     Text(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(5.dp),
-                        text = article.content
+                        text = article.content,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
