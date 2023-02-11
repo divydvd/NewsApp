@@ -1,19 +1,19 @@
 package com.example.newsapp.ui.presentation.screen.article
 
-import android.util.Log
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsapp.domain.model.Article
 import com.example.newsapp.domain.model.Source
-import com.example.newsapp.ui.presentation.screen.topnews.NewsItem
 import com.example.newsapp.util.timeFormatter
 import com.ramcosta.composedestinations.annotation.Destination
 
@@ -30,6 +29,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 fun ArticleScreen(
     article: Article,
 ) {
+    val ctx = LocalContext.current
     Box(
         modifier = Modifier
             .padding(16.dp)
@@ -53,18 +53,17 @@ fun ArticleScreen(
                 Column(modifier = Modifier) {
                     Text(
                         modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxWidth(),
+                            .padding(5.dp),
                         text = article.title,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Black
                     )
-                    if(article.author.isNotEmpty()) {
+                    if (article.author.isNotEmpty()) {
                         Text(
                             modifier = Modifier
                                 .padding(5.dp)
                                 .wrapContentHeight(), //${if(article.publishedAt.isNotEmpty()) timeFormatter(article.publishedAt) else ""}
-                            text = "Reported by: ${article.author}",
+                            text = "${if(article.publishedAt.isNotEmpty()) timeFormatter(article.publishedAt) else ""}  ${article.author}",
                             fontSize = 14.sp,
                             color = Color.Gray,
                             fontWeight = FontWeight.Bold
@@ -72,11 +71,21 @@ fun ArticleScreen(
                     }
                     Text(
                         modifier = Modifier
-                            .fillMaxSize()
                             .padding(5.dp),
                         text = article.content,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .clickable {
+                                openUrl(context = ctx, mUrl = article.url)
+                            },
+                        text = "Read More...",
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Blue
                     )
                 }
             }
@@ -85,6 +94,13 @@ fun ArticleScreen(
         }
     }
 
+}
+fun openUrl(context: Context, mUrl: String) {
+    val urlIntent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse(mUrl)
+    )
+    context.startActivity(urlIntent)
 }
 
 @Preview
@@ -101,5 +117,8 @@ fun ArticleScreenPreview() {
         content = "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups."
     )
 
-    ArticleScreen(article = article)
+    ArticleScreen(
+        article = article,
+//        navigateToWebViewScreen = {}
+    )
 }

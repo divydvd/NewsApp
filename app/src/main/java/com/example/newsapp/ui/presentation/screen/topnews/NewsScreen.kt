@@ -1,9 +1,7 @@
 package com.example.newsapp.ui.presentation.screen.topnews
 
-import android.graphics.Typeface.BOLD
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,7 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,19 +21,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsapp.R
 import com.example.newsapp.domain.model.Article
 import com.example.newsapp.domain.model.Source
-import com.example.newsapp.ui.presentation.screen.article.ArticleScreen
 import com.example.newsapp.ui.presentation.screen.destinations.ArticleScreenDestination
 import com.example.newsapp.util.timeFormatter
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -88,7 +85,7 @@ fun NewsScreen(
                             navigateToArticle = {
                                 navigator.navigate(
                                     ArticleScreenDestination(
-                                        article
+                                        article = article,
                                     )
                                 )
                             },
@@ -182,7 +179,7 @@ fun NewsItem(
                     modifier = Modifier
                         .padding(top = 4.dp)
                         .wrapContentHeight(), //${if(article.publishedAt.isNotEmpty()) timeFormatter(article.publishedAt) else ""}
-                    text = "${article.author}",
+                    text = "${if(article.publishedAt.isNotEmpty()) timeFormatter(article.publishedAt) else ""}  ${article.author}",
                     fontSize = 12.sp,
                     color = Color.Gray,
                     fontWeight = FontWeight.Bold
