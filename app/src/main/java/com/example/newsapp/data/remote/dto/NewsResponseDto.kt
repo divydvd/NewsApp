@@ -2,29 +2,21 @@ package com.example.newsapp.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-//@JsonClass(generateAdapter = true)
 data class NewsResponseDto(
     @SerializedName("articles")
     val articles: List<Article>?,
-//
-//    @SerializedName("status")
-//    val status: String?,
-//
-//    @SerializedName("totalResults")
-//    val totalResults: Int?
 )
 
-//@JsonClass(generateAdapter = true)
 data class Article(
     @SerializedName("author")
     val author: String?,
-//
+
     @SerializedName("content")
     val content: String?,
-//
+
     @SerializedName("description")
     val description: String?,
-//
+
     @SerializedName("publishedAt")
     val publishedAt: String?,
 
@@ -33,7 +25,7 @@ data class Article(
 
     @SerializedName("title")
     val title: String?,
-//
+
     @SerializedName("url")
     val url: String?,
 

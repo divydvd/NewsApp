@@ -32,7 +32,6 @@ fun ArticleScreen(
 ) {
     Box(
         modifier = Modifier
-            .background(Color.White)
             .padding(16.dp)
     ) {
         Column(
