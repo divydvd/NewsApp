@@ -10,13 +10,12 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph
+import com.example.newsapp.ui.presentation.screen.NavGraphs
 import com.example.newsapp.ui.presentation.screen.topnews.NewsScreen
 import com.example.newsapp.ui.presentation.screen.topnews.NewsViewModel
 import com.example.newsapp.ui.presentation.theme.NewsAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
-import com.example.newsapp.ui.presentation.screen.NavGraphs
 
 
 @AndroidEntryPoint

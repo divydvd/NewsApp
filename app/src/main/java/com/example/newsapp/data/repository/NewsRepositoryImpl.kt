@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi,
     private val db: NewsDatabase,
@@ -40,13 +42,20 @@ class NewsRepositoryImpl @Inject constructor(
     override suspend fun fetchArticles(): Flow<Resource<NewsInfo>> {
         return flow {
             emit(Resource.Loading(true))
-            val response = api.fetchTopHeadlines()
-            if(response.isSuccessful) {
-                emit(Resource.Success(
-                    data = response.body()?.toNewsInfo()
-                ))
+            try {
+                val response = api.fetchTopHeadlines()
+                if(response.isSuccessful) {
+                    emit(Resource.Success(
+                        data = response.body()?.toNewsInfo()
+                    ))
+                }
+                else {
+                    emit(Resource.Error(
+                        message = "f"
+                    ))
+                }
             }
-            else {
+            catch(e: Exception) {
                 emit(Resource.Error(
                     message = "f"
                 ))

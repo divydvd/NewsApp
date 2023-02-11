@@ -12,7 +12,8 @@ fun Article.toDomainArticle() : com.example.newsapp.domain.model.Article {
         publishedAt = publishedAt,
         urlToImage = urlToImage,
         url = url,
-        author = author
+        author = author,
+        content = content
     )
 }
 
@@ -23,6 +24,7 @@ fun com.example.newsapp.domain.model.Article.toDataArticle() : Article {
         sourceName = source.name,
         publishedAt = publishedAt,
         urlToImage = urlToImage,
-        url = url
+        url = url,
+        content = content
     )
 }

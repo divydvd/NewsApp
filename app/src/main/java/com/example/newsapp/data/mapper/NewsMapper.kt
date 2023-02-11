@@ -15,6 +15,7 @@ fun NewsResponseDto.toNewsInfo(): NewsInfo {
                 urlToImage = it.urlToImage ?: "",
                 url = it.url ?: "",
                 author = it.author ?: "",
+                content = it.content ?: ""
             )
         } ?: emptyList(),
         isSaved = false

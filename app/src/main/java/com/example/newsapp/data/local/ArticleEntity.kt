@@ -10,6 +10,7 @@ data class Article(
     val sourceName: String,
     val publishedAt: String,
     val urlToImage: String,
+    val content: String,
     @PrimaryKey val url: String = ""
 )
 

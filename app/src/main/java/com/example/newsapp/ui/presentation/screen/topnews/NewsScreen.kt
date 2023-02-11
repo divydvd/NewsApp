@@ -9,23 +9,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsapp.R
 import com.example.newsapp.domain.model.Article
@@ -44,31 +42,46 @@ fun NewsScreen(
     newsViewModel: NewsViewModel = hiltViewModel(),
 ) {
     val state by newsViewModel.getState.collectAsState()
-    val savedArticles by newsViewModel.getSavedArticles.collectAsState()
+    val savedArticles by newsViewModel.getSavedArticles.observeAsState(initial = emptyList())
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing)
 
-    Log.d("hello", state.toString())
-    SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = {
-            newsViewModel.onEvent(NewsListingEvent.Refresh)
+    Box(modifier = Modifier) {
+        if (state.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
-    ) {
-        LazyColumn() {
-            items(state.newsList) { article ->
-                NewsItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    article = article,
-                    savedArticles = savedArticles,
-                    navigateToArticle = {
-                        navigator.navigate(ArticleScreenDestination())
-                    },
-                )
-                Divider(color = colorResource(R.color.black))
 
+        Log.d("hellooo", savedArticles.size.toString())
+        SwipeRefresh(
+            modifier = Modifier.fillMaxSize(),
+            state = swipeRefreshState,
+            onRefresh = {
+                newsViewModel.onEvent(NewsListingEvent.Refresh)
+            }
+        ) {
+            LazyColumn() {
+                items(state.newsList) { article ->
+                    val saved = savedArticles.contains(article)
+                    NewsItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        article = article,
+                        saved = saved,
+                        navigateToArticle = {
+                            navigator.navigate(
+                                ArticleScreenDestination(
+                                    article
+                                )
+                            )
+                        },
+                        onSaveIconClicked = { article ->
+                            newsViewModel.saveArticleClicked(article)
+                        }
+                    )
+                    Divider(color = colorResource(R.color.black))
+
+                }
             }
         }
     }
@@ -78,10 +91,11 @@ fun NewsScreen(
 fun NewsItem(
     modifier: Modifier = Modifier,
     article: Article,
-    savedArticles: List<Article>,
+    saved: Boolean,
     navigateToArticle: () -> Unit,
+    onSaveIconClicked: (Article) -> Unit,
 ) {
-    val saved = savedArticles.contains(article)
+
     Card(
         modifier = Modifier
             .background(Color.LightGray),
@@ -97,6 +111,7 @@ fun NewsItem(
                 .wrapContentHeight()
                 .fillMaxSize()
                 .background(Color.LightGray),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 modifier = Modifier
@@ -122,25 +137,48 @@ fun NewsItem(
                     modifier = Modifier
                         .wrapContentHeight(),
                     text = article.title,
-                    fontSize = 15.sp,
+                    fontSize = 16.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
                 )
-                Text(
+
+                Row(
                     modifier = Modifier
-                        .wrapContentHeight(),
-                    text = article.author,
-                    fontSize = 12.sp,
-                )
+                        .padding(
+                            horizontal = 10.dp,
+                            vertical = 10.dp
+                        )
+                        .wrapContentHeight()
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .align(Alignment.CenterVertically),
+                        text = article.author,
+                        fontSize = 14.sp,
+                    )
+
+                    Spacer(modifier = Modifier.width(100.dp))
+
+                    Icon(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(20.dp)
+                            .align(Alignment.CenterVertically)
+                            .clickable {
+                                onSaveIconClicked(article)
+                            },
+                        contentDescription = "bookmark_icon",
+                        painter = painterResource(
+                            id = if (saved) R.drawable.baseline_bookmark_24
+                            else R.drawable.baseline_bookmark_border_24
+                        ),
+                    )
+                }
             }
 
-            Icon(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentDescription = "bookmark_icon",
-                painter = painterResource(
-                    id = if (saved) R.drawable.baseline_bookmark_24
-                    else R.drawable.baseline_bookmark_border_24
-                ),
-            )
         }
     }
 }

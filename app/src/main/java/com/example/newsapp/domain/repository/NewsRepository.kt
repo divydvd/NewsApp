@@ -4,6 +4,7 @@ import com.example.newsapp.domain.model.Article
 import com.example.newsapp.domain.model.NewsInfo
 import com.example.newsapp.util.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Response
 
 interface NewsRepository {
