@@ -61,7 +61,12 @@ fun NewsScreen(
             }
         ) {
             LazyColumn() {
-                if(state.newsList.isEmpty()) {
+
+                /**
+                 * state.newsList.isEmpty() is to see if the response from the api has come through or nor
+                 * !state.isLoading check to show the data from the database- i.e. don't show when the screen is loading
+                 */
+                if(state.newsList.isEmpty() && !state.isLoading) {
                     items(savedArticles) { article ->
                         val saved = savedArticles.contains(article)
                         NewsItem(
@@ -77,8 +82,8 @@ fun NewsScreen(
                                     )
                                 )
                             },
-                            onSaveIconClicked = { article ->
-                                newsViewModel.saveArticleClicked(article)
+                            onSaveIconClicked = { saveArticle ->
+                                newsViewModel.saveArticleClicked(saveArticle)
                             }
                         )
                         Divider(color = colorResource(R.color.black))
